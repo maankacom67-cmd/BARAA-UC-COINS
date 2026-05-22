@@ -18,33 +18,42 @@ export interface Product {
 export const PRODUCTS: Product[] = [
   {
     id: 'free-60',
-    name: '60 UC BILAASH AH',
-    amount: '60 UC',
-    bonus: 'Hadyad Gaar ah',
+    name: '60 PUBG UC',
+    amount: '60 PUBG UC',
+    bonus: 'BILAASH / FREE',
     price: 'BILAASH',
     category: 'PUBG',
-    badge: 'HADYAD',
-    image: 'https://img.icons8.com/3d-fluency/180/ticket.png'
+    badge: 'PROMO',
+    image: 'https://img.icons8.com/3d-fluency/180/gift--v2.png'
   },
   {
-    id: '1',
-    name: 'PUBG UC Pack',
-    amount: '300 + 25 UC',
-    bonus: 'Abaalmarin Degdeg ah',
+    id: '325-uc',
+    name: '325 PUBG UC',
+    amount: '325 PUBG UC',
+    bonus: 'Delivery deg-deg ah',
     price: '$4.99',
     category: 'PUBG',
-    badge: 'Bilowga',
+    image: 'https://img.icons8.com/3d-fluency/180/coins.png'
+  },
+  {
+    id: '660-uc',
+    name: '660 PUBG UC',
+    amount: '660 PUBG UC',
+    bonus: 'Aad loogu iibsado dukaanka',
+    price: '$9.99',
+    category: 'PUBG',
+    badge: 'Hot',
     image: 'https://img.icons8.com/3d-fluency/180/ticket.png'
   },
   {
-    id: '2',
-    name: 'PUBG UC Pack',
-    amount: '1500 + 300 UC',
-    bonus: 'Xirmo Weyn',
+    id: '1800-uc',
+    name: '1800 PUBG UC',
+    amount: '1800 PUBG UC',
+    bonus: 'Qiimaha ugu jaban',
     price: '$24.99',
     category: 'PUBG',
-    badge: 'Ugu Caansan',
-    image: 'https://img.icons8.com/3d-fluency/180/ticket.png'
+    badge: 'Best Value',
+    image: 'https://img.icons8.com/3d-fluency/180/crown.png'
   },
   {
     id: '3',
