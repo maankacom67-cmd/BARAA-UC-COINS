@@ -5,10 +5,10 @@ import ProductCard from './ProductCard';
 import { motion, AnimatePresence } from 'motion/react';
 
 interface ShopProps {
-  onNavigateToCheckout: () => void;
+  onSelectProduct: (productId: string) => void;
 }
 
-export default function Shop({ onNavigateToCheckout }: ShopProps) {
+export default function Shop({ onSelectProduct }: ShopProps) {
   const [activeCategory, setActiveCategory] = useState<string>('Dhammaan Ciyaaraha');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -76,7 +76,7 @@ export default function Shop({ onNavigateToCheckout }: ShopProps) {
                 transition={{ duration: 0.3 }}
                 layout
               >
-                <ProductCard product={product} onAddToCart={() => onNavigateToCheckout()} />
+                <ProductCard product={product} onAddToCart={() => onSelectProduct(product.id)} />
               </motion.div>
             ))}
           </AnimatePresence>

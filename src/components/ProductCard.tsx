@@ -11,12 +11,16 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
   return (
     <motion.div
       whileHover={{ y: -10 }}
-      className="relative group bg-slate-800 border border-brand-primary/20 rounded-[24px] overflow-hidden p-6 transition-all duration-300 hover:border-brand-primary hover:shadow-[0_10px_30px_rgba(251,191,36,0.2)]"
+      className={`relative group bg-slate-800 border rounded-[24px] overflow-hidden p-6 transition-all duration-300 ${
+        product.price === 'BILAASH' 
+        ? 'border-brand-primary shadow-[0_0_20px_rgba(251,191,36,0.3)] bg-gradient-to-br from-slate-800 to-brand-primary/10' 
+        : 'border-brand-primary/20 bg-slate-800 hover:border-brand-primary hover:shadow-[0_10px_30px_rgba(251,191,36,0.2)]'
+      }`}
       id={`product-card-${product.id}`}
     >
       {product.badge && (
         <div className="absolute top-0 right-0 z-10">
-          <div className="bg-brand-primary text-brand-bg text-[10px] font-black px-4 py-1.5 uppercase rounded-bl-xl tracking-wider shadow-lg">
+          <div className={`${product.price === 'BILAASH' ? 'bg-white text-brand-bg animate-pulse' : 'bg-brand-primary text-brand-bg'} text-[10px] font-black px-4 py-1.5 uppercase rounded-bl-xl tracking-wider shadow-lg`}>
             {product.badge}
           </div>
         </div>
@@ -24,12 +28,12 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
 
       <div className="flex flex-col items-center text-center">
         <div className="relative w-40 h-40 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-          <div className="absolute inset-0 bg-brand-primary/5 rounded-full blur-3xl group-hover:bg-brand-primary/20 transition-colors" />
+          <div className={`absolute inset-0 rounded-full blur-3xl transition-colors ${product.price === 'BILAASH' ? 'bg-brand-primary/30' : 'bg-brand-primary/5 group-hover:bg-brand-primary/20'}`} />
           {product.image ? (
             <img 
               src={product.image} 
               alt={product.name}
-              className="w-32 h-32 object-contain drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] group-hover:drop-shadow-[0_0_25px_rgba(251,191,36,0.8)] transition-all duration-500"
+              className={`w-32 h-32 object-contain transition-all duration-500 ${product.price === 'BILAASH' ? 'drop-shadow-[0_0_25px_rgba(251,191,36,0.9)] animate-bounce' : 'drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] group-hover:drop-shadow-[0_0_25px_rgba(251,191,36,0.8)]'}`}
               referrerPolicy="no-referrer"
             />
           ) : (

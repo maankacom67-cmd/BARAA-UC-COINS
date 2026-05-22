@@ -17,12 +17,22 @@ import { motion, AnimatePresence } from 'motion/react';
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   // Check login status on mount
   useEffect(() => {
     const userLoggedIn = localStorage.getItem('userLoggedIn') === 'true';
     setIsLoggedIn(userLoggedIn);
   }, []);
+
+  const handleProductSelect = (productId: string) => {
+    setSelectedProductId(productId);
+    if (productId === 'free-60') {
+      setCurrentPage('auth');
+    } else {
+      setCurrentPage('checkout');
+    }
+  };
 
   const handleLogout = () => {
     localStorage.removeItem('userLoggedIn');
@@ -67,7 +77,7 @@ export default function App() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            <Shop onNavigateToCheckout={() => setCurrentPage('checkout')} />
+            <Shop onSelectProduct={handleProductSelect} />
           </motion.div>
         );
       case 'checkout':
@@ -93,6 +103,7 @@ export default function App() {
             <Auth 
               onBack={() => setCurrentPage('home')} 
               initialMode={currentPage === 'login' ? 'login' : 'signup'}
+              isFreeUC={selectedProductId === 'free-60'}
               onSuccess={() => {
                 setIsLoggedIn(true);
                 localStorage.setItem('userLoggedIn', 'true');
