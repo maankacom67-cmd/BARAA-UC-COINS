@@ -12,15 +12,13 @@ import FAQ from './components/FAQ';
 import Footer from './components/Footer';
 import Checkout from './components/Checkout';
 import Auth from './components/Auth';
-import OrderModal from './components/OrderModal';
 import { PRODUCTS, Product } from './constants';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
 
   // Check login status on mount
   useEffect(() => {
@@ -29,10 +27,11 @@ export default function App() {
   }, []);
 
   const handleProductSelect = (productId: string) => {
-    const product = PRODUCTS.find(p => p.id === productId);
-    if (product) {
-      setSelectedProduct(product);
-      setIsOrderModalOpen(true);
+    setSelectedProductId(productId);
+    if (productId === 'free-60') {
+      setCurrentPage('auth');
+    } else {
+      setCurrentPage('checkout');
     }
   };
 
@@ -105,7 +104,7 @@ export default function App() {
             <Auth 
               onBack={() => setCurrentPage('home')} 
               initialMode={currentPage === 'login' ? 'login' : 'signup'}
-              isFreeUC={selectedProduct?.id === 'free-60'}
+              isFreeUC={selectedProductId === 'free-60'}
               onSuccess={() => {
                 setIsLoggedIn(true);
                 localStorage.setItem('userLoggedIn', 'true');
@@ -188,12 +187,6 @@ export default function App() {
       </main>
 
       <Footer />
-
-      <OrderModal 
-        product={selectedProduct} 
-        isOpen={isOrderModalOpen} 
-        onClose={() => setIsOrderModalOpen(false)} 
-      />
     </div>
   );
 }

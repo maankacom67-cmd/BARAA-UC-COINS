@@ -1,101 +1,69 @@
-import { ShoppingCart, Gift, Sparkles, Gem, BadgeCent } from 'lucide-react';
+import { ShoppingCart, Zap, Gem, CircleDollarSign, Plus } from 'lucide-react';
 import { Product } from '../constants';
 import { motion } from 'motion/react';
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product) => void;
+  onAddToCart: (productId: string) => void;
 }
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  const isFree = product.price === 'BILAASH';
-
   return (
     <motion.div
-      whileHover={{ y: -8, scale: 1.02 }}
-      transition={{ duration: 0.3, ease: 'easeOut' }}
-      className={`relative group bg-slate-900 border rounded-2xl p-6 flex flex-col justify-between text-center overflow-hidden h-full ${
-        isFree 
-          ? 'border-green-500/40 shadow-[0_0_15px_rgba(34,197,94,0.2)] hover:shadow-[0_0_25px_rgba(34,197,94,0.6)]' 
-          : 'border-slate-800/85 shadow-[0_0_15px_rgba(245,158,11,0.1)] hover:border-amber-500/30 hover:shadow-[0_0_25px_rgba(245,158,11,0.5)]'
+      whileHover={{ y: -10 }}
+      className={`relative group bg-slate-800 border rounded-[24px] overflow-hidden p-6 transition-all duration-300 ${
+        product.price === 'BILAASH' 
+        ? 'border-brand-primary shadow-[0_0_20px_rgba(251,191,36,0.3)] bg-gradient-to-br from-slate-800 to-brand-primary/10' 
+        : 'border-brand-primary/20 bg-slate-800 hover:border-brand-primary hover:shadow-[0_10px_30px_rgba(251,191,36,0.2)]'
       }`}
       id={`product-card-${product.id}`}
     >
-      {/* Badge at the top */}
       {product.badge && (
-        <div className="absolute top-3 right-3 z-10">
-          <span className={`text-[10px] font-black px-2.5 py-1 rounded uppercase tracking-wider shadow-sm ${
-            isFree 
-              ? 'bg-green-500 text-slate-100 animate-pulse' 
-              : 'bg-amber-500 text-slate-950'
-          }`}>
+        <div className="absolute top-0 right-0 z-10">
+          <div className={`${product.price === 'BILAASH' ? 'bg-white text-brand-bg animate-pulse' : 'bg-brand-primary text-brand-bg'} text-[10px] font-black px-4 py-1.5 uppercase rounded-bl-xl tracking-wider shadow-lg`}>
             {product.badge}
-          </span>
+          </div>
         </div>
       )}
 
-      {/* Main Container */}
-      <div className="flex flex-col items-center flex-grow mb-6">
-        {/* Glow & Icon container */}
-        <div className="relative w-28 h-28 mx-auto mb-5 flex items-center justify-center">
-          <div className={`absolute inset-0 rounded-full blur-2xl transition-all duration-500 ${
-            isFree 
-              ? 'bg-green-500/10 group-hover:bg-green-500/20' 
-              : 'bg-amber-500/10 group-hover:bg-amber-500/20'
-          }`} />
-          
-          <div className={`w-24 h-24 rounded-full flex items-center justify-center border transition-all duration-300 ${
-            isFree 
-              ? 'bg-green-500/10 border-green-500/20 group-hover:border-green-500/40' 
-              : 'bg-amber-500/10 border-amber-500/20 group-hover:border-amber-500/40'
-          }`}>
-            {isFree ? (
-              <Gift className="w-12 h-12 text-green-400 group-hover:scale-110 transition-transform duration-300" />
-            ) : product.category === 'Coins' ? (
-              <BadgeCent className="w-12 h-12 text-amber-400 group-hover:scale-110 transition-transform duration-300 animate-pulse" />
-            ) : (
-              <Gem className="w-12 h-12 text-amber-400 group-hover:scale-110 transition-transform duration-300" />
-            )}
-          </div>
+      <div className="flex flex-col items-center text-center">
+        <div className="relative w-40 h-40 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
+          <div className={`absolute inset-0 rounded-full blur-3xl transition-colors ${product.price === 'BILAASH' ? 'bg-brand-primary/30' : 'bg-brand-primary/5 group-hover:bg-brand-primary/20'}`} />
+          {product.image ? (
+            <img 
+              src={product.image} 
+              alt={product.name}
+              className={`w-32 h-32 object-contain transition-all duration-500 ${product.price === 'BILAASH' ? 'drop-shadow-[0_0_25px_rgba(251,191,36,0.9)] animate-bounce' : 'drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] group-hover:drop-shadow-[0_0_25px_rgba(251,191,36,0.8)]'}`}
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="w-16 h-16 rounded-2xl bg-brand-bg flex items-center justify-center shadow-inner">
+               <Plus className="w-8 h-8 text-slate-400" />
+            </div>
+          )}
         </div>
 
-        {/* Product Details */}
-        <div className="mb-4">
-          <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${
-            isFree ? 'text-green-400' : 'text-amber-400'
-          }`}>
-            {product.category} Mobile
-          </p>
-          <h3 className="text-2xl font-black text-white mb-1 tracking-tight">
-            {product.amount}
-          </h3>
-          <p className={`text-xs ${isFree ? 'text-green-400 font-extrabold' : 'text-slate-400 font-medium'}`}>
-            {product.bonus || 'Auto-Delivery enabled'}
+        <div className="mb-6">
+          <p className="text-[10px] font-bold text-brand-primary uppercase tracking-[0.2em] mb-1">{product.category}</p>
+          <h3 className="text-2xl font-black text-slate-100 mb-1">{product.amount}</h3>
+          <p className="text-xs font-semibold text-slate-400">
+            {product.bonus || product.name}
           </p>
         </div>
-
-        {/* Pricing tag */}
-        <div className={`text-xl font-black px-5 py-1.5 rounded-full border mb-2 mt-auto inline-block ${
-          isFree 
-            ? 'bg-green-950/40 text-green-400 border-green-500/20' 
-            : 'bg-slate-950 text-slate-100 border-slate-800'
-        }`}>
+        
+        <div className="text-3xl font-display font-black text-slate-100 mb-8 bg-slate-900/50 px-6 py-2 rounded-full border border-slate-700">
           {product.price}
         </div>
-      </div>
 
-      {/* Button with exact behavior */}
-      <button
-        onClick={() => onAddToCart(product)}
-        className={`w-full font-bold py-3 px-4 rounded-xl transition duration-300 transform active:scale-95 cursor-pointer flex items-center justify-center gap-2 ${
-          isFree 
-            ? 'bg-green-500 hover:bg-green-600 text-slate-950 font-black' 
-            : 'bg-amber-500 hover:bg-amber-600 text-slate-950 font-black'
-        }`}
-        id={`product-buy-btn-${product.id}`}
-      >
-        <span>{isFree ? 'Hada Qaado' : 'Iibso Hada'}</span>
-      </button>
+        <button
+          onClick={() => onAddToCart(product.id)}
+          className="w-full bg-brand-primary text-brand-bg py-4 rounded-xl font-black text-lg hover:bg-brand-primary-hover hover:scale-[1.02] transition-all flex items-center justify-center gap-3 gaming-glow"
+          id={`product-buy-btn-${product.id}`}
+        >
+          <ShoppingCart className="w-5 h-5" />
+          Iibso Hada
+        </button>
+      </div>
     </motion.div>
   );
 }
