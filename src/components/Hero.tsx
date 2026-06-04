@@ -27,13 +27,12 @@ export default function Hero({ onCtaClick }: HeroProps) {
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-display font-black leading-tight mb-6">
-              Saaxiibkaaga <br />
-              <span className="text-brand-primary">Lacagaha Ciyaaraha</span>
+              Kusoo Dhawaada wabsedka rasmiga ah ee <br />
+              <span className="text-brand-primary">BARAA UC & COINS</span>
             </h1>
             
             <p className="text-slate-400 text-lg mb-10 max-w-lg leading-relaxed">
-              Geesi degdeg ah, kala iibsi ammaan ah, iyo qiimo jaban oo UC iyo Coins ah. 
-              Ku hel xirmooyinkaaga ilbiriqsiyo gudahood waqti kasta.
+              Halkaan waa dukaanka ugu kalsoonida badan ee aad ka heli karto PUBG UC, Free Fire Diamonds, iyo adeegyo kale oo degdeg ah. Ku naxariiso akoonkaaga oo ku dallac qiimo jaban iyo dammaanad buuxda 24/7
             </p>
             
             <div className="flex flex-wrap gap-4">
