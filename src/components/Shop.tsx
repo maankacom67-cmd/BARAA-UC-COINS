@@ -12,10 +12,14 @@ export default function Shop({ onSelectProduct }: ShopProps) {
   const [activeCategory, setActiveCategory] = useState<string>('Dhammaan Ciyaaraha');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const categories = ['Dhammaan Ciyaaraha', 'PUBG Mobile', 'Free Fire', 'Mobile Legends', 'Coins'];
+  const categories = ['Dhammaan Ciyaaraha', 'PUBG Mobile', 'Free Fire', 'eFootball Coins'];
 
   const filteredProducts = PRODUCTS.filter(p => {
-    const matchesCategory = activeCategory === 'Dhammaan Ciyaaraha' || p.category === activeCategory || (activeCategory === 'PUBG Mobile' && p.category === 'PUBG');
+    const matchesCategory = 
+      activeCategory === 'Dhammaan Ciyaaraha' || 
+      (activeCategory === 'PUBG Mobile' && p.category === 'PUBG') ||
+      (activeCategory === 'Free Fire' && p.category === 'Free Fire') ||
+      (activeCategory === 'eFootball Coins' && (p.category === 'eFootball' || p.category === 'Coins'));
     const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || p.amount.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });

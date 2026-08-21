@@ -1,0 +1,40 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == 'maankacom66@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) || (isAuthenticated() && request.auth.uid == userId);
+      allow update: if isOwner(userId) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Orders and Topup Requests
+    match /orders/{orderId} {
+      // Anyone can create an order or topup request (guests or logged-in users)
+      allow create: if true;
+      // Users can view their own orders, admins can view all orders
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid);
+      // Admin can update status (e.g. approve/complete order), owner can cancel pending
+      allow update: if isAdmin() || (isAuthenticated() && resource.data.userId == request.auth.uid && resource.data.status == 'pending');
+      allow delete: if isAdmin();
+    }
+  }
+}

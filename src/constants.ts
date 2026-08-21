@@ -3,13 +3,17 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import pubgUcImage from './assets/images/pubg_uc_coins_1787292925576.jpg';
+import freefireDiamondsImage from './assets/images/freefire_diamonds_1787292939641.jpg';
+import efootballCoinsImage from './assets/images/efootball_coins_1787292967232.jpg';
+
 export interface Product {
   id: string;
   name: string;
   amount: string;
   bonus?: string;
   price: string;
-  category: 'PUBG' | 'Free Fire' | 'Mobile Legends' | 'Coins';
+  category: 'PUBG' | 'Free Fire' | 'eFootball' | 'Coins';
   badge?: string;
   icon?: string;
   image?: string;
@@ -24,62 +28,116 @@ export const PRODUCTS: Product[] = [
     price: 'BILAASH',
     category: 'PUBG',
     badge: 'HADYAD',
-    image: 'https://img.icons8.com/3d-fluency/180/ticket.png'
+    image: pubgUcImage
   },
   {
-    id: '1',
-    name: 'PUBG UC Pack',
-    amount: '300 + 25 UC',
+    id: 'pubg-660',
+    name: 'PUBG Mobile UC',
+    amount: '600 + 60 UC',
     bonus: 'Abaalmarin Degdeg ah',
-    price: '$4.99',
+    price: '$9.99',
     category: 'PUBG',
     badge: 'Bilowga',
-    image: 'https://img.icons8.com/3d-fluency/180/ticket.png'
+    image: pubgUcImage
   },
   {
-    id: '2',
-    name: 'PUBG UC Pack',
+    id: 'pubg-1800',
+    name: 'PUBG Mobile UC',
     amount: '1500 + 300 UC',
-    bonus: 'Xirmo Weyn',
+    bonus: 'Xirmo Royale Pass',
     price: '$24.99',
     category: 'PUBG',
     badge: 'Ugu Caansan',
-    image: 'https://img.icons8.com/3d-fluency/180/ticket.png'
+    image: pubgUcImage
   },
   {
-    id: '3',
-    name: 'Standard Coins',
-    amount: '5000 Coins',
-    price: '$9.99',
-    category: 'Coins',
-    image: 'https://img.icons8.com/3d-fluency/180/coins.png'
+    id: 'pubg-3000',
+    name: 'PUBG Mobile UC Pack',
+    amount: '3,000 UC',
+    bonus: 'Xirmo Weyn + Bonus',
+    price: '$39.99',
+    category: 'PUBG',
+    badge: 'MEGA PACK',
+    image: pubgUcImage
   },
   {
-    id: '4',
-    name: 'Premium Coins',
-    amount: '20000 + 5000 Coins',
-    bonus: 'Abaalmarin VIP',
-    price: '$34.99',
-    category: 'Coins',
-    badge: 'Qiimaha ugu Wanaagsan',
-    image: 'https://img.icons8.com/3d-fluency/180/coins.png'
-  },
-  {
-    id: '5',
+    id: 'ff-1060',
     name: 'Free Fire Diamonds',
-    amount: '2100 + 210 Diamonds',
-    bonus: 'Kabaal weyn',
-    price: '$19.99',
+    amount: '1,060 Diamonds',
+    bonus: 'Dallacaad Degdeg ah',
+    price: '$14.99',
     category: 'Free Fire',
-    badge: 'Qiimaha ugu Fiican',
-    image: 'https://img.icons8.com/3d-fluency/180/diamond.png'
+    badge: 'POPULAR',
+    image: freefireDiamondsImage
   },
   {
-    id: '6',
-    name: 'Mobile Legends',
-    amount: '1000 Diamonds',
-    price: '$14.99',
-    category: 'Mobile Legends',
-    image: 'https://img.icons8.com/3d-fluency/180/crystal.png'
+    id: 'ff-2000',
+    name: 'Free Fire Diamonds',
+    amount: '2,000 Diamonds',
+    bonus: 'Elite Pass + Bonus',
+    price: '$28.99',
+    category: 'Free Fire',
+    badge: 'Ugu Fiican',
+    image: freefireDiamondsImage
+  },
+  {
+    id: 'ff-5000',
+    name: 'Free Fire 5,000 Diamonds',
+    amount: '5,000 Diamonds',
+    bonus: 'VIP Crate + Super Bonus',
+    price: '$49.99',
+    category: 'Free Fire',
+    badge: 'SUPER VALUE',
+    image: freefireDiamondsImage
+  },
+  {
+    id: 'ef-500',
+    name: 'eFootball Coins',
+    amount: '500 Coins',
+    bonus: 'Xirmo Bilow ah',
+    price: '$4.99',
+    category: 'eFootball',
+    badge: 'BILOW',
+    image: efootballCoinsImage
+  },
+  {
+    id: 'ef-1000',
+    name: 'eFootball Coins',
+    amount: '1,000 Coins',
+    bonus: 'Special Player Contract',
+    price: '$9.99',
+    category: 'eFootball',
+    badge: 'CAAN AH',
+    image: efootballCoinsImage
+  },
+  {
+    id: 'ef-2100',
+    name: 'eFootball Coins',
+    amount: '2,100 Coins',
+    bonus: 'Manager & Player Packs',
+    price: '$19.99',
+    category: 'eFootball',
+    badge: 'NEW SEASON',
+    image: efootballCoinsImage
+  },
+  {
+    id: 'ef-5800',
+    name: 'eFootball Coins',
+    amount: '5,800 Coins',
+    bonus: 'Epic Cards & Spin Boost',
+    price: '$49.99',
+    category: 'eFootball',
+    badge: 'BEST SELLER',
+    image: efootballCoinsImage
+  },
+  {
+    id: 'ef-12500',
+    name: 'eFootball 12,500 Coins',
+    amount: '12,500 Coins',
+    bonus: 'Unleash Your Team (VIP)',
+    price: '$99.99',
+    category: 'eFootball',
+    badge: 'MAX PACK',
+    image: efootballCoinsImage
   }
 ];

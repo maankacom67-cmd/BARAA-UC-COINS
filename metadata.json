@@ -2,5 +2,7 @@
   "name": "BARAA UC & COINS",
   "description": "Premiere destination for gaming currency. Secure, fast, and modern shop for UC, Coins, and more.",
   "requestFramePermissions": [],
-  "majorCapabilities": []
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

@@ -1,0 +1,32 @@
+{
+  "entities": {
+    "User": {
+      "collection": "users",
+      "fields": {
+        "uid": { "type": "string", "description": "User authentication ID" },
+        "email": { "type": "string", "description": "User email address" },
+        "phone": { "type": "string", "description": "User phone number" },
+        "displayName": { "type": "string", "description": "Display name" },
+        "playerId": { "type": "string", "description": "Default PUBG / Gaming Player ID" },
+        "role": { "type": "string", "description": "Role: user or admin" },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp" }
+      }
+    },
+    "Order": {
+      "collection": "orders",
+      "fields": {
+        "userId": { "type": "string", "description": "User ID if logged in" },
+        "userEmail": { "type": "string", "description": "Contact email" },
+        "userPhone": { "type": "string", "description": "Contact phone or EVC number" },
+        "playerId": { "type": "string", "description": "Game Player ID to top up" },
+        "productId": { "type": "string", "description": "Product ID" },
+        "productName": { "type": "string", "description": "Product Name" },
+        "amount": { "type": "string", "description": "Amount of UC / Diamonds" },
+        "price": { "type": "string", "description": "Price paid" },
+        "paymentMethod": { "type": "string", "description": "Payment method (EVC, Card, Free Promo)" },
+        "status": { "type": "string", "description": "Order status (pending, processing, completed, cancelled)" },
+        "createdAt": { "type": "timestamp", "description": "Creation timestamp" }
+      }
+    }
+  }
+}

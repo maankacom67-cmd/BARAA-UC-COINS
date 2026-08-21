@@ -1,5 +1,6 @@
 import { ShoppingBag, ArrowRight, Zap, Shield, Star } from 'lucide-react';
 import { motion } from 'motion/react';
+import heroMockupImage from '../assets/images/hero_game_topup_1787292986331.jpg';
 
 interface HeroProps {
   onCtaClick: () => void;
@@ -77,12 +78,12 @@ export default function Hero({ onCtaClick }: HeroProps) {
           >
             <div className="relative z-10 rounded-2xl overflow-hidden shadow-2xl shadow-brand-primary/20 border border-slate-800 bg-brand-surface">
               <img 
-                src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800" 
-                alt="Gaming Setup" 
-                className="w-full object-cover opacity-80"
+                src={heroMockupImage} 
+                alt="Gaming UC, Diamonds, Coins Topup" 
+                className="w-full object-cover opacity-90 hover:scale-105 transition-transform duration-700"
                 referrerPolicy="no-referrer"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-bg via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-bg/80 via-transparent to-transparent" />
             </div>
             
             {/* Floating elements for visual interest */}

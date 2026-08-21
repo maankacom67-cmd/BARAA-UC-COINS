@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { Mail, Phone, Lock, ArrowRight, Github, Chrome, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { Mail, Phone, Lock, ArrowRight, Chrome, X, CheckCircle2, AlertCircle, ShieldAlert } from 'lucide-react';
 import { motion } from 'motion/react';
-import emailjs from '@emailjs/browser';
+import { useAuth } from '../context/AuthContext';
+import { createOrderInFirestore } from '../lib/orders';
 
 interface AuthProps {
   onBack: () => void;
@@ -22,84 +23,111 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  useEffect(() => {
-    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
-    if (publicKey && publicKey !== 'YOUR_PUBLIC_KEY') {
-      emailjs.init(publicKey);
+  const { signupWithEmail, loginWithEmail, loginWithGoogle, user } = useAuth();
+
+  const sendToWhatsApp = (phone: string, playerId: string) => {
+    const tel_number = "252771909054"; 
+    let message = `Asc Maanka, waxaan rabaa inaan iibsado UC&conis. Xogtaydu waa lambarka lacagta: Tel: ${phone}`;
+    
+    if (isFreeUC) {
+      message = `Asc Maanka, waxaan rabaa 60-ka UC ee BILAASHKA ah.\nXogtaydu waa:\n🆔 PUBG ID: ${playerId || formData.playerId}`;
     }
-  }, []);
+
+    const whatsappUrl = `https://wa.me/${tel_number}?text=${encodeURIComponent(message)}`;
+    window.open(whatsappUrl, '_blank');
+  };
+
+  const handleGoogleSignIn = async () => {
+    setStatus(null);
+    setIsSubmitting(true);
+    try {
+      await loginWithGoogle();
+      setStatus({ type: 'success', msg: 'Si guul leh ayaad ugu gashay Google!' });
+      
+      if (isFreeUC && formData.playerId) {
+        // Record free UC order in Firestore
+        await createOrderInFirestore({
+          playerId: formData.playerId,
+          productId: 'free-60',
+          productName: '60 UC BILAASH AH',
+          amount: '60 UC',
+          price: 'BILAASH',
+          paymentMethod: 'Free Promo',
+          status: 'pending',
+          userPhone: formData.phone || ''
+        });
+        sendToWhatsApp(formData.phone, formData.playerId);
+      }
+
+      if (onSuccess) onSuccess();
+      setTimeout(() => onBack(), 1500);
+    } catch (err: any) {
+      console.error('Google Sign In error:', err);
+      setStatus({ type: 'error', msg: err.message || 'Khalad ayaa dhacay Google sign-in' });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus(null);
 
     if (mode === 'signup') {
-      if (!formData.email && !formData.phone) {
-        setStatus({ type: 'error', msg: 'Fadlan geli Gmail ama Lambarka Taleefanka' });
+      if (!formData.email) {
+        setStatus({ type: 'error', msg: 'Fadlan geli Gmail-kaaga' });
         return;
       }
       
-      if (!formData.password) {
-        setStatus({ type: 'error', msg: 'Fadlan abuur Password' });
+      if (!formData.password || formData.password.length < 6) {
+        setStatus({ type: 'error', msg: 'Password-ku waa inuu ka koobnaadaa ugu yaraan 6 xaraf' });
+        return;
+      }
+
+      if (isFreeUC && !formData.playerId) {
+        setStatus({ type: 'error', msg: 'Fadlan geli PUBG Player ID-gaaga si aad u hesho 60 UC' });
         return;
       }
 
       setIsSubmitting(true);
 
-      const templateParams = {
-        user_email: formData.email,
-        user_phone: formData.phone,
-        user_password: formData.password,
-        player_id: formData.playerId,
-        is_free_uc: isFreeUC ? 'YES' : 'NO'
-      };
-
       try {
-        const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-        const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+        await signupWithEmail(formData.email, formData.password, formData.phone, formData.playerId);
 
-        const sendToWhatsApp = () => {
-          const tel_number = "252771909054"; 
-          let message = `Asc Maanka, waxaan rabaa inaan iibsado UC&conis. Xogtaydu waa lambarka lacagta: Tel: ${formData.phone}`;
-          
-          if (isFreeUC) {
-            message = `Asc Maanka, waxaan rabaa 60-ka UC ee BILAASHKA ah.\nXogtaydu waa:\n🆔 PUBG ID: ${formData.playerId}`;
-          }
-
-          const whatsappUrl = `https://wa.me/${tel_number}?text=${encodeURIComponent(message)}`;
-          window.open(whatsappUrl, '_blank');
-        };
-
-        if (serviceId && templateId && publicKey && serviceId !== 'YOUR_SERVICE_ID') {
-          await emailjs.send(serviceId, templateId, templateParams, publicKey);
-          
-          setIsSubmitting(false);
-          setIsSubmitted(true);
-          if (onSuccess) onSuccess();
-          sendToWhatsApp();
-
-          setStatus({ 
-            type: 'success', 
-            msg: "Waad ku mahadsantahay is-diiwaangelinta! Dalabkaaga UC waa nala soo gaaray." 
-          });
-        } else {
-          // Demo fallback
-          console.log('EmailJS keys not configured. Data:', formData);
-          
-          setIsSubmitting(false);
-          setIsSubmitted(true);
-          if (onSuccess) onSuccess();
-          sendToWhatsApp();
-
-          setStatus({ 
-            type: 'success', 
-            msg: "Waad ku mahadsantahay is-diiwaangelinta! (Demo Mode)\nDalabkaaga UC waa nala soo gaaray." 
+        // Save order to Firestore if it's Free UC promo
+        if (isFreeUC) {
+          await createOrderInFirestore({
+            playerId: formData.playerId,
+            productId: 'free-60',
+            productName: '60 UC BILAASH AH',
+            amount: '60 UC',
+            price: 'BILAASH',
+            paymentMethod: 'Free Promo',
+            status: 'pending',
+            userEmail: formData.email,
+            userPhone: formData.phone
           });
         }
+
+        setIsSubmitted(true);
+        if (onSuccess) onSuccess();
+        sendToWhatsApp(formData.phone, formData.playerId);
+
+        setStatus({ 
+          type: 'success', 
+          msg: "Koontadaada iyo macluumaadkaaga si ammaan ah ayaa loogu keydiyay Firebase Database! Dalabkaaga waa nala soo gaaray." 
+        });
       } catch (error: any) {
-        console.error('EmailJS Error:', error);
-        setStatus({ type: 'error', msg: "Khalad ayaa dhacay, fadlan mar kale isku day." });
+        console.error('Firebase Auth Error:', error);
+        let errorMsg = "Khalad ayaa dhacay, fadlan mar kale isku day.";
+        if (error.code === 'auth/email-already-in-use') {
+          errorMsg = "Email-kan hadda ka hor ayaa loo isticmaalay koonto kale. Fadlan 'Soo Gal' dooro.";
+        } else if (error.code === 'auth/invalid-email') {
+          errorMsg = "Email-ku ma saxna, fadlan hubi.";
+        } else if (error.code === 'auth/weak-password') {
+          errorMsg = "Password-ku aad buu u daciifsan yahay. Geli mid ka adag.";
+        }
+        setStatus({ type: 'error', msg: errorMsg });
       } finally {
         setIsSubmitting(false);
       }
@@ -109,9 +137,22 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
         setStatus({ type: 'error', msg: 'Fadlan geli email-ka iyo password-ka' });
         return;
       }
-      if (onSuccess) onSuccess();
-      setStatus({ type: 'success', msg: 'Si guul leh ayaad u soo gashay!' });
-      setTimeout(() => onBack(), 2000);
+      setIsSubmitting(true);
+      try {
+        await loginWithEmail(formData.email, formData.password);
+        if (onSuccess) onSuccess();
+        setStatus({ type: 'success', msg: 'Si guul leh ayaad u soo gashay koontadaada!' });
+        setTimeout(() => onBack(), 1500);
+      } catch (err: any) {
+        console.error('Login error:', err);
+        let msg = 'Email-ka ama Password-ka waa qalad.';
+        if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+          msg = 'Email-ka ama Password-ka aad galisay ma saxna.';
+        }
+        setStatus({ type: 'error', msg });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -131,14 +172,18 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
         </button>
 
         <div className="glass-card rounded-2xl p-8 border-t-4 border-t-brand-primary gaming-glow">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-display font-black mb-3">
+          <div className="text-center mb-8">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold mb-3">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              Firebase Database Live
+            </div>
+            <h2 className="text-3xl font-display font-black mb-2">
               {mode === 'signup' ? 'Is-diiwaangeli' : 'Soo Gal'}
             </h2>
             <p className="text-slate-400 text-sm">
               {mode === 'signup' 
-                ? 'Ku biir BARAA UC & COINS si aad u hesho adeeg degdeg ah.' 
-                : 'Ku soo dhawaada mar kale, saaxiibka ciyaaraha.'}
+                ? 'Ku biir BARAA UC & COINS si xogtaada & dalabaadkaaga loogu kaydiyo database-ka.' 
+                : 'Ku soo dhawaada mar kale koontadaada BARAA UC & COINS.'}
             </p>
           </div>
 
@@ -146,29 +191,35 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className={`mb-6 p-4 rounded-xl text-sm font-bold flex items-center gap-3 ${
-                status.type === 'success' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 'bg-red-500/10 text-red-500 border border-red-500/20'
+              className={`mb-6 p-4 rounded-xl text-sm font-bold flex items-start gap-3 ${
+                status.type === 'success' ? 'bg-green-500/10 text-green-400 border border-green-500/20' : 'bg-red-500/10 text-red-400 border border-red-500/20'
               }`}
             >
-              <div className={`w-2 h-2 rounded-full ${status.type === 'success' ? 'bg-green-500' : 'bg-red-500'}`} />
-              <p className="whitespace-pre-line">{status.msg}</p>
+              {status.type === 'success' ? (
+                <CheckCircle2 className="w-5 h-5 text-green-400 flex-shrink-0 mt-0.5" />
+              ) : (
+                <AlertCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
+              )}
+              <p className="whitespace-pre-line leading-snug">{status.msg}</p>
             </motion.div>
           )}
 
-          <form className="space-y-5" onSubmit={handleSubmit}>
+          <form className="space-y-4" onSubmit={handleSubmit}>
             {mode === 'signup' && (
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">PUBG Player ID</label>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">
+                  PUBG Player ID {isFreeUC && <span className="text-brand-primary">(U baahan tahay)</span>}
+                </label>
                 <div className="relative">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center">
                     <span className="text-[10px] font-black text-brand-primary">ID</span>
                   </div>
                   <input 
                     type="text" 
-                    placeholder="Geli Player ID-gaaga"
+                    placeholder="Geli Player ID-gaaga (tusaale: 5123456789)"
                     value={formData.playerId}
                     onChange={(e) => setFormData({...formData, playerId: e.target.value})}
-                    className="w-full bg-brand-bg/50 border border-slate-700 rounded-xl py-3.5 pl-12 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all"
+                    className="w-full bg-slate-900/60 border border-slate-700 rounded-xl py-3 pl-12 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all text-sm"
                     id="auth-playerid-input"
                   />
                 </div>
@@ -176,92 +227,96 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
             )}
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Gmail-kaaga</label>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Gmail / Email</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input 
                   type="email" 
+                  required
                   placeholder="tusaale@gmail.com"
                   value={formData.email}
                   onChange={(e) => setFormData({...formData, email: e.target.value})}
-                  className="w-full bg-brand-bg/50 border border-slate-700 rounded-xl py-3.5 pl-12 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all"
+                  className="w-full bg-slate-900/60 border border-slate-700 rounded-xl py-3 pl-12 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all text-sm"
                   id="auth-email-input"
                 />
               </div>
             </div>
 
             {mode === 'signup' && (
-              <>
-                <div className="flex items-center gap-4 py-1">
-                  <div className="h-px bg-slate-800 flex-1" />
-                  <span className="text-[10px] font-bold text-slate-600 uppercase tracking-widest">ama</span>
-                  <div className="h-px bg-slate-800 flex-1" />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Lambarka Taleefanka</label>
-                  <div className="relative">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-2 pr-3 border-r border-slate-700">
-                      <span className="text-xs font-bold text-slate-400">+252</span>
-                    </div>
-                    <input 
-                      type="tel" 
-                      placeholder="61XXXXXXX"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                      className="w-full bg-brand-bg/50 border border-slate-700 rounded-xl py-3.5 pl-20 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all"
-                      id="auth-phone-input"
-                    />
+              <div>
+                <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Lambarka Taleefanka</label>
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-1.5 pr-2.5 border-r border-slate-700">
+                    <span className="text-xs font-bold text-slate-400">+252</span>
                   </div>
+                  <input 
+                    type="tel" 
+                    placeholder="61XXXXXXX"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                    className="w-full bg-slate-900/60 border border-slate-700 rounded-xl py-3 pl-20 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all text-sm"
+                    id="auth-phone-input"
+                  />
                 </div>
-              </>
+              </div>
             )}
 
             <div>
-              <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2">Password-ka</label>
+              <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input 
                   type="password" 
-                  placeholder={mode === 'signup' ? 'Abuur password adag' : 'Gali password-kaaga'}
+                  required
+                  placeholder={mode === 'signup' ? 'Abuur password (ugu yaraan 6 xaraf)' : 'Geli password-kaaga'}
                   value={formData.password}
                   onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  className="w-full bg-brand-bg/50 border border-slate-700 rounded-xl py-3.5 pl-12 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all"
+                  className="w-full bg-slate-900/60 border border-slate-700 rounded-xl py-3 pl-12 pr-4 text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-brand-primary transition-all text-sm"
                   id="auth-password-input"
                 />
               </div>
             </div>
 
             {isSubmitted && mode === 'signup' ? (
-              <div className="w-full bg-brand-primary/10 text-brand-primary py-4 rounded-xl font-black text-lg flex items-center justify-center gap-2 mt-4 border border-brand-primary/20 shadow-lg animate-pulse" id="auth-success-message">
-                Dalabkaaga waa nala soo gaaray
+              <div className="w-full bg-brand-primary/10 text-brand-primary py-3.5 rounded-xl font-black text-base flex items-center justify-center gap-2 mt-4 border border-brand-primary/20 shadow-lg animate-pulse" id="auth-success-message">
+                Dalabkaaga iyo koontadaada waa la keydiyay!
               </div>
             ) : (
               <button 
                 type="submit"
                 disabled={isSubmitting}
-                className={`w-full bg-brand-primary text-brand-bg py-4 rounded-xl font-black text-lg hover:bg-brand-primary-hover transition-all flex items-center justify-center gap-2 mt-4 shadow-lg shadow-brand-primary/10 ${isSubmitting ? 'opacity-50 cursor-not-allowed' : ''}`}
+                className={`w-full bg-brand-primary text-brand-bg py-3.5 rounded-xl font-black text-base hover:bg-brand-primary-hover transition-all flex items-center justify-center gap-2 mt-4 shadow-lg shadow-brand-primary/10 ${isSubmitting ? 'opacity-60 cursor-not-allowed' : ''}`}
                 id="auth-submit-btn"
               >
                 {isSubmitting ? (
                   <div className="flex items-center gap-2">
-                    <div className="w-5 h-5 border-2 border-brand-bg border-t-transparent rounded-full animate-spin" />
-                    Diraya...
+                    <div className="w-4 h-4 border-2 border-brand-bg border-t-transparent rounded-full animate-spin" />
+                    Fadlan sug...
                   </div>
                 ) : (
                   <>
-                    {mode === 'signup' ? 'Sign Up' : 'Soo Gal'}
-                    <ArrowRight className="w-5 h-5" />
+                    {mode === 'signup' ? 'Is-diiwaangeli' : 'Soo Gal'}
+                    <ArrowRight className="w-4 h-4" />
                   </>
                 )}
               </button>
             )}
           </form>
 
-          <div className="mt-10 pt-8 border-t border-slate-800/50">
+          <div className="mt-8 pt-6 border-t border-slate-800/80">
+            <button 
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={isSubmitting}
+              className="w-full flex items-center justify-center gap-2.5 p-3 bg-slate-800/80 border border-slate-700 rounded-xl text-slate-200 hover:bg-slate-800 hover:text-white transition-all text-sm font-bold mb-4 active:scale-98"
+            >
+              <Chrome className="w-4 h-4 text-brand-primary" />
+              Ku gal Google Account
+            </button>
+
             <div className="text-center">
-              <p className="text-sm text-slate-500">
-                {mode === 'signup' ? 'Hadda ka hor miyaad is-diiwaangelisay?' : 'Miyaanad lahayn koonte?'}
+              <p className="text-xs text-slate-400">
+                {mode === 'signup' ? 'Hadda ka hor ma is-diiwaangelisay?' : 'Miyaanad lahayn koonto?'}
                 <button 
                   onClick={() => setMode(mode === 'signup' ? 'login' : 'signup')}
                   className="ml-2 text-brand-primary font-bold hover:underline"
@@ -270,17 +325,6 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
                   {mode === 'signup' ? 'Soo Gal' : 'Is-diiwaangeli'}
                 </button>
               </p>
-            </div>
-            
-            <div className="mt-8 grid grid-cols-2 gap-4">
-              <button className="flex items-center justify-center gap-2 p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-xs font-bold">
-                <Chrome className="w-3.5 h-3.5" />
-                Google
-              </button>
-              <button className="flex items-center justify-center gap-2 p-3 bg-slate-800/50 border border-slate-700 rounded-xl text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-xs font-bold">
-                <Github className="w-3.5 h-3.5" />
-                GitHub
-              </button>
             </div>
           </div>
         </div>

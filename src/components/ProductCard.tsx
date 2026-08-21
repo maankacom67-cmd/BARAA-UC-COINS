@@ -27,13 +27,13 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
       )}
 
       <div className="flex flex-col items-center text-center">
-        <div className="relative w-40 h-40 mb-6 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-          <div className={`absolute inset-0 rounded-full blur-3xl transition-colors ${product.price === 'BILAASH' ? 'bg-brand-primary/30' : 'bg-brand-primary/5 group-hover:bg-brand-primary/20'}`} />
+        <div className="relative w-full h-44 mb-6 flex items-center justify-center group-hover:scale-105 transition-transform duration-500 rounded-2xl overflow-hidden bg-slate-900/60 border border-slate-700/50">
+          <div className={`absolute inset-0 rounded-full blur-3xl transition-colors ${product.price === 'BILAASH' ? 'bg-brand-primary/30' : 'bg-brand-primary/10 group-hover:bg-brand-primary/20'}`} />
           {product.image ? (
             <img 
               src={product.image} 
               alt={product.name}
-              className={`w-32 h-32 object-contain transition-all duration-500 ${product.price === 'BILAASH' ? 'drop-shadow-[0_0_25px_rgba(251,191,36,0.9)] animate-bounce' : 'drop-shadow-[0_0_15px_rgba(251,191,36,0.6)] group-hover:drop-shadow-[0_0_25px_rgba(251,191,36,0.8)]'}`}
+              className={`w-full h-full object-cover transition-all duration-500 ${product.price === 'BILAASH' ? 'brightness-110 drop-shadow-[0_0_25px_rgba(251,191,36,0.9)]' : 'group-hover:scale-110'}`}
               referrerPolicy="no-referrer"
             />
           ) : (
@@ -41,6 +41,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
                <Plus className="w-8 h-8 text-slate-400" />
             </div>
           )}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent pointer-events-none" />
         </div>
 
         <div className="mb-6">
