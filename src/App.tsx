@@ -25,12 +25,7 @@ export default function App() {
   const handleProductSelect = (productId: string) => {
     const product = PRODUCTS.find((p) => p.id === productId) || null;
     setSelectedProduct(product);
-    
-    if (productId === 'free-60') {
-      setCurrentPage('auth');
-    } else {
-      setCurrentPage('checkout');
-    }
+    setCurrentPage('checkout');
   };
 
   // Scroll to top on page change
@@ -99,14 +94,7 @@ export default function App() {
             <Auth 
               onBack={() => setCurrentPage('home')} 
               initialMode={currentPage === 'login' ? 'login' : 'signup'}
-              isFreeUC={selectedProduct?.id === 'free-60'}
-              onSuccess={() => {
-                if (selectedProduct?.id === 'free-60') {
-                  setCurrentPage('home');
-                } else {
-                  setCurrentPage('shop');
-                }
-              }}
+              onSuccess={() => setCurrentPage('shop')}
             />
           </motion.div>
         );

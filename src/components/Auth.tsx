@@ -8,10 +8,9 @@ interface AuthProps {
   onBack: () => void;
   initialMode?: 'login' | 'signup';
   onSuccess?: () => void;
-  isFreeUC?: boolean;
 }
 
-export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFreeUC }: AuthProps) {
+export default function Auth({ onBack, initialMode = 'signup', onSuccess }: AuthProps) {
   const [mode, setMode] = useState<'login' | 'signup'>(initialMode);
   const [formData, setFormData] = useState({
     email: '',
@@ -27,12 +26,7 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
 
   const sendToWhatsApp = (phone: string, playerId: string) => {
     const tel_number = "252610446604"; 
-    let message = `Asc Maanka, waxaan rabaa inaan iibsado UC&conis. Xogtaydu waa lambarka lacagta: Tel: ${phone}`;
-    
-    if (isFreeUC) {
-      message = `Asc Maanka, waxaan rabaa 60-ka UC ee BILAASHKA ah.\nXogtaydu waa:\n🆔 PUBG ID: ${playerId || formData.playerId}`;
-    }
-
+    const message = `Asc Maanka, waxaan iska diiwaangeliyay BARAA UC & COINS.\nEmail: ${formData.email}\nTel: ${phone}\nPlayer ID: ${playerId || 'N/A'}`;
     const whatsappUrl = `https://wa.me/${tel_number}?text=${encodeURIComponent(message)}`;
     window.open(whatsappUrl, '_blank');
   };
@@ -43,21 +37,6 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
     try {
       await loginWithGoogle();
       setStatus({ type: 'success', msg: 'Si guul leh ayaad ugu gashay Google!' });
-      
-      if (isFreeUC && formData.playerId) {
-        // Record free UC order in Firestore
-        await createOrderInFirestore({
-          playerId: formData.playerId,
-          productId: 'free-60',
-          productName: '60 UC BILAASH AH',
-          amount: '60 UC',
-          price: 'BILAASH',
-          paymentMethod: 'Free Promo',
-          status: 'pending',
-          userPhone: formData.phone || ''
-        });
-        sendToWhatsApp(formData.phone, formData.playerId);
-      }
 
       if (onSuccess) onSuccess();
       setTimeout(() => onBack(), 1500);
@@ -84,38 +63,20 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
         return;
       }
 
-      if (isFreeUC && !formData.playerId) {
-        setStatus({ type: 'error', msg: 'Fadlan geli PUBG Player ID-gaaga si aad u hesho 60 UC' });
-        return;
-      }
-
       setIsSubmitting(true);
 
       try {
         await signupWithEmail(formData.email, formData.password, formData.phone, formData.playerId);
 
-        // Save order to Firestore if it's Free UC promo
-        if (isFreeUC) {
-          await createOrderInFirestore({
-            playerId: formData.playerId,
-            productId: 'free-60',
-            productName: '60 UC BILAASH AH',
-            amount: '60 UC',
-            price: 'BILAASH',
-            paymentMethod: 'Free Promo',
-            status: 'pending',
-            userEmail: formData.email,
-            userPhone: formData.phone
-          });
-        }
-
         setIsSubmitted(true);
         if (onSuccess) onSuccess();
-        sendToWhatsApp(formData.phone, formData.playerId);
+        if (formData.phone) {
+          sendToWhatsApp(formData.phone, formData.playerId);
+        }
 
         setStatus({ 
           type: 'success', 
-          msg: "Koontadaada iyo macluumaadkaaga si ammaan ah ayaa loogu keydiyay Firebase Database! Dalabkaaga waa nala soo gaaray." 
+          msg: "Koontadaada si ammaan ah ayaa loogu keydiyay Firebase Database!" 
         });
       } catch (error: any) {
         console.error('Firebase Auth Error:', error);
@@ -208,7 +169,7 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
             {mode === 'signup' && (
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1.5">
-                  PUBG Player ID {isFreeUC && <span className="text-brand-primary">(U baahan tahay)</span>}
+                  PUBG Player ID <span className="text-slate-500 font-normal">(Ikhtiyaari)</span>
                 </label>
                 <div className="relative">
                   <div className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center">
