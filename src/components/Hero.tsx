@@ -26,7 +26,7 @@ export default function Hero({ onCtaClick }: HeroProps) {
               Geesi Hillaac ah
             </div>
             
-            <h1 className="text-5xl lg:text-7xl font-display font-black leading-tight mb-6">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl font-display font-black leading-tight mb-6">
               Kusoo Dhawaada wabsedka rasmiga ah ee <br />
               <span className="text-brand-primary">BARAA UC & COINS</span>
             </h1>
@@ -35,16 +35,16 @@ export default function Hero({ onCtaClick }: HeroProps) {
               Halkaan waa dukaanka ugu kalsoonida badan ee aad ka heli karto PUBG UC, Free Fire Diamonds, iyo adeegyo kale oo degdeg ah. Ku naxariiso akoonkaaga oo ku dallac qiimo jaban iyo dammaanad buuxda 24/7
             </p>
             
-            <div className="flex flex-wrap gap-4">
+            <div className="flex flex-row gap-3 sm:gap-4">
               <button 
                 onClick={onCtaClick}
-                className="bg-brand-primary text-brand-bg px-8 py-4 rounded-xl text-lg font-bold hover:bg-brand-primary-hover transition-all active:scale-95 flex items-center gap-2 gaming-glow-strong"
+                className="bg-brand-primary text-brand-bg px-4 py-3 sm:px-8 sm:py-4 rounded-xl text-sm sm:text-lg font-bold hover:bg-brand-primary-hover transition-all active:scale-95 flex items-center gap-1.5 sm:gap-2 gaming-glow-strong whitespace-nowrap"
                 id="hero-cta-button"
               >
-                Iibso Hadda <ArrowRight className="w-5 h-5" />
+                Iibso Hadda <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
               </button>
               <button 
-                className="bg-slate-800/50 backdrop-blur text-slate-100 border border-slate-700 px-8 py-4 rounded-xl text-lg font-bold hover:bg-slate-800 transition-all active:scale-95"
+                className="bg-slate-800/50 backdrop-blur text-slate-100 border border-slate-700 px-4 py-3 sm:px-8 sm:py-4 rounded-xl text-sm sm:text-lg font-bold hover:bg-slate-800 transition-all active:scale-95 whitespace-nowrap"
                 id="hero-secondary-button"
               >
                 Fiiri Qiimaha

@@ -37,7 +37,7 @@ export default function Navbar({ onNavigate, currentPage, isLoggedIn, onLogout }
           </div>
 
           {/* Desktop Nav */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) => (
               <button
                 key={link.id}
@@ -59,7 +59,7 @@ export default function Navbar({ onNavigate, currentPage, isLoggedIn, onLogout }
           </div>
 
           {/* Actions */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4">
             <button className="p-2 text-slate-400 hover:text-brand-primary transition-colors relative" id="cart-button">
               <ShoppingCart className="w-6 h-6" />
               <span className="absolute top-1 right-1 w-4 h-4 bg-brand-primary text-brand-bg text-[10px] font-bold rounded-full flex items-center justify-center">0</span>
@@ -109,7 +109,7 @@ export default function Navbar({ onNavigate, currentPage, isLoggedIn, onLogout }
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center gap-4">
+          <div className="lg:hidden flex items-center gap-4">
             <button className="p-2 text-slate-400">
                <ShoppingCart className="w-6 h-6" />
             </button>
@@ -131,7 +131,7 @@ export default function Navbar({ onNavigate, currentPage, isLoggedIn, onLogout }
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass-card border-x-0 border-b-0"
+            className="lg:hidden glass-card border-x-0 border-b-0"
           >
             <div className="px-4 pt-2 pb-6 space-y-2">
               {navLinks.map((link) => (
