@@ -60,13 +60,13 @@ export default function Checkout({ product, onBack }: CheckoutProps) {
       });
 
       // Send to WhatsApp
-      const tel_number = "252771909054";
+      const tel_number = "252610446604";
       const message = `Asc Maanka, waxaan soo diray dalab cusub oo ku jira Firebase Database:\n🆔 Order ID: #${orderId.slice(0, 7)}\n🎮 Player ID: ${playerId.trim()}\n💎 Xirmo: ${currentProduct.amount} (${currentProduct.price})\n📞 EVC: ${evcNumber || 'N/A'}`;
       const whatsappUrl = `https://wa.me/${tel_number}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, '_blank');
 
       if (paymentMethod === 'EVC') {
-        window.location.href = "tel:*712*771909054%23";
+        window.location.href = "tel:*712*610446604%23";
       }
     } catch (err: any) {
       console.error('Error creating order in Firestore:', err);
@@ -258,7 +258,7 @@ export default function Checkout({ product, onBack }: CheckoutProps) {
                   <div className="p-4 bg-brand-primary/10 border border-brand-primary/20 rounded-xl flex items-center justify-between">
                     <div>
                       <p className="text-xs font-bold text-brand-primary uppercase tracking-wider mb-1">Ku dir lacagta lambarkan:</p>
-                      <p className="text-2xl font-black text-slate-100 tracking-widest">0771909054</p>
+                      <p className="text-2xl font-black text-slate-100 tracking-widest">0610446604</p>
                     </div>
                     <div className="text-xs text-slate-400 font-mono">Maanka Service</div>
                   </div>

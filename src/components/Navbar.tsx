@@ -40,11 +40,11 @@ export default function Navbar({ onNavigate, currentPage }: NavbarProps) {
               onClick={() => onNavigate('home')}
               id="nav-logo"
             >
-              <div className="w-10 h-10 bg-brand-primary rounded-lg flex items-center justify-center shadow-lg shadow-brand-primary/20">
-                <span className="text-brand-bg font-black text-xl">B</span>
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-brand-primary rounded-lg flex items-center justify-center shadow-lg shadow-brand-primary/20">
+                <span className="text-brand-bg font-black text-base sm:text-xl">B</span>
               </div>
-              <span className="font-display font-black text-xl tracking-tighter uppercase hidden sm:block">
-                BARAA <span className="text-brand-primary text-sm">UC & COINS</span>
+              <span className="font-display font-black text-sm sm:text-xl tracking-tight uppercase">
+                BARAA <span className="text-brand-primary text-xs sm:text-sm">UC & COINS</span>
               </span>
             </div>
 

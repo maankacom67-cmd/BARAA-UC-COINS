@@ -26,7 +26,7 @@ export default function Auth({ onBack, initialMode = 'signup', onSuccess, isFree
   const { signupWithEmail, loginWithEmail, loginWithGoogle, user } = useAuth();
 
   const sendToWhatsApp = (phone: string, playerId: string) => {
-    const tel_number = "252771909054"; 
+    const tel_number = "252610446604"; 
     let message = `Asc Maanka, waxaan rabaa inaan iibsado UC&conis. Xogtaydu waa lambarka lacagta: Tel: ${phone}`;
     
     if (isFreeUC) {

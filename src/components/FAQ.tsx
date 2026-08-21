@@ -29,32 +29,32 @@ export default function FAQ() {
   ];
 
   return (
-    <section className="py-24 bg-brand-surface/30" id="faq-section">
+    <section className="py-12 sm:py-20 bg-brand-surface/30" id="faq-section">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <div className="flex justify-center mb-4 text-brand-primary">
-            <HelpCircle className="w-12 h-12" />
+        <div className="text-center mb-10 sm:mb-14">
+          <div className="flex justify-center mb-3 text-brand-primary">
+            <HelpCircle className="w-8 h-8 sm:w-10 sm:h-10" />
           </div>
-          <h2 className="text-3xl lg:text-5xl mb-4">Su\'aalaha inta badan la isweydiiyo (FAQ)</h2>
-          <p className="text-slate-400">Wax ka baro sida ay wax u shaqeeyaan iyo shaqada aan qabano.</p>
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-black mb-2 sm:mb-3">Su'aalaha inta badan la isweydiiyo (FAQ)</h2>
+          <p className="text-slate-400 text-xs sm:text-sm">Wax ka baro sida ay wax u shaqeeyaan iyo shaqada aan qabano.</p>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {faqs.map((faq, idx) => (
             <div 
               key={faq.id}
-              className={`glass-card rounded-2xl overflow-hidden transition-all border-slate-800 ${openIndex === idx ? 'border-brand-primary/40 shadow-lg shadow-brand-primary/5' : ''}`}
+              className={`glass-card rounded-xl sm:rounded-2xl overflow-hidden transition-all border-slate-800 ${openIndex === idx ? 'border-brand-primary/40 shadow-lg shadow-brand-primary/5' : ''}`}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
-                className="w-full flex items-center justify-between p-6 text-left"
+                className="w-full flex items-center justify-between p-4 sm:p-5 text-left"
                 id={`faq-toggle-${idx}`}
               >
-                <span className="font-bold text-slate-100 pr-8">{faq.q}</span>
+                <span className="font-bold text-xs sm:text-sm md:text-base text-slate-100 pr-4 sm:pr-8">{faq.q}</span>
                 {openIndex === idx ? (
-                  <ChevronUp className="w-5 h-5 text-brand-primary" />
+                  <ChevronUp className="w-4 h-4 sm:w-5 sm:h-5 text-brand-primary flex-shrink-0" />
                 ) : (
-                  <ChevronDown className="w-5 h-5 text-slate-500" />
+                  <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-slate-500 flex-shrink-0" />
                 )}
               </button>
               
@@ -66,7 +66,7 @@ export default function FAQ() {
                     exit={{ height: 0, opacity: 0 }}
                     className="overflow-hidden"
                   >
-                    <div className="px-6 pb-6 text-slate-400 text-sm leading-relaxed border-t border-slate-800/50 pt-4">
+                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 text-slate-400 text-xs sm:text-sm leading-relaxed border-t border-slate-800/50 pt-3">
                       {faq.a}
                     </div>
                   </motion.div>

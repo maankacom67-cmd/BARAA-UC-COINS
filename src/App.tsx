@@ -15,6 +15,7 @@ import Auth from './components/Auth';
 import { PRODUCTS, Product } from './constants';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAuth } from './context/AuthContext';
+import { MessageCircle } from 'lucide-react';
 
 export default function App() {
   const [currentPage, setCurrentPage] = useState('home');
@@ -49,11 +50,11 @@ export default function App() {
           >
             <Hero onCtaClick={() => setCurrentPage('shop')} />
             <Features />
-            <div className="py-20 text-center">
-              <h2 className="text-3xl lg:text-5xl font-display font-black mb-6">Diyaar ma u tahay inaad hesho UC?</h2>
+            <div className="py-12 sm:py-20 text-center px-4">
+              <h2 className="text-2xl sm:text-3xl lg:text-4xl font-display font-black mb-4 sm:mb-6">Diyaar ma u tahay inaad hesho UC?</h2>
               <button 
                 onClick={() => setCurrentPage('shop')}
-                className="bg-brand-primary text-brand-bg px-10 py-5 rounded-xl text-xl font-bold hover:bg-brand-primary-hover transition-all gaming-glow cursor-pointer active:scale-95"
+                className="bg-brand-primary text-brand-bg px-6 py-3.5 sm:px-9 sm:py-4 rounded-xl text-sm sm:text-base font-bold hover:bg-brand-primary-hover transition-all gaming-glow cursor-pointer active:scale-95"
               >
                 Bilow Bakhaarka
               </button>
@@ -154,7 +155,7 @@ export default function App() {
                   <p className="text-xs text-slate-400 mb-4">Waxaan ka jawaabnaa farriimaha WhatsApp iyo Taleefanka ilbiriqsiyo gudahood.</p>
                   <div className="flex gap-4">
                     <a 
-                      href="https://wa.me/252771909054" 
+                      href="https://wa.me/252610446604" 
                       target="_blank" 
                       rel="noreferrer"
                       className="flex-1 bg-green-600 hover:bg-green-500 text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center transition-all"
@@ -162,7 +163,7 @@ export default function App() {
                       WhatsApp Direct
                     </a>
                     <a 
-                      href="tel:0771909054"
+                      href="tel:0610446604"
                       className="flex-1 bg-slate-800 hover:bg-slate-700 text-white py-2.5 rounded-xl text-xs font-bold flex items-center justify-center transition-all border border-slate-700"
                     >
                       Wac Hadda
@@ -184,7 +185,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen selection:bg-brand-primary/30 selection:text-brand-primary">
+    <div className="min-h-screen selection:bg-brand-primary/30 selection:text-brand-primary relative">
       <Navbar 
         onNavigate={setCurrentPage} 
         currentPage={currentPage}
@@ -195,6 +196,21 @@ export default function App() {
           {renderPage()}
         </AnimatePresence>
       </main>
+
+      {/* Floating WhatsApp Button */}
+      <a
+        href="https://wa.me/252610446604"
+        target="_blank"
+        rel="noreferrer"
+        className="fixed bottom-6 right-6 z-50 bg-green-600 hover:bg-green-500 text-white p-3.5 sm:p-4 rounded-full shadow-2xl shadow-green-600/40 hover:scale-110 active:scale-95 transition-all duration-300 flex items-center gap-2 group border border-green-400/30"
+        title="Nagala soo xiriir WhatsApp"
+        id="floating-whatsapp-btn"
+      >
+        <MessageCircle className="w-6 h-6 animate-pulse" />
+        <span className="max-w-0 overflow-hidden whitespace-nowrap group-hover:max-w-xs transition-all duration-300 ease-in-out text-xs font-bold sm:inline-block">
+          WhatsApp
+        </span>
+      </a>
 
       <Footer />
     </div>
