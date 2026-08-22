@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://ais-pre-7cyhsmknwjgddkftnb6cyf-305068352166.europe-west2.run.app/sitemap.xml
+Sitemap: https://baraauc.netlify.app/sitemap.xml
